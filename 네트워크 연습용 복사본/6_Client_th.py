@@ -10,10 +10,10 @@ ADDR = (HOST, PORT)
 
 def get_user_info():
     while True:
-        user_input = input("Enter 'User_ID: Country(1. korea 2. japan 3. china 4. mongolia 5. taiwan) \n(ex. Cho:korea) \n")
+        user_input = input("Enter 'User_ID: Country(1. south korea 2. north korea 3. china 4. japan 5. mongolia 6. taiwan) \n(ex. Cho:korea) \n")
         try:
             user_id, country = map(str.strip, user_input.split(':'))
-            if country in ["korea", "japan", "china", "mongolia", "taiwan"]:
+            if country in ["south korea", "north korea", "china", "japan", "mongolia", "taiwan"]:
                 return f"{user_id}:{country}"
             else:
                 print("Fail, 다시 입력해주세요.") #입력 형식 오류(:때문)
@@ -57,7 +57,7 @@ while True:
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             formatted_message = f"send: {user_id}/ {country}/ {timestamp}/ {sendData}"
             clientSocket.send(formatted_message.encode())
-            print({formatted_message})
+            print(formatted_message)
 
     if sendData == 'exit':
         break

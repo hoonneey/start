@@ -8,7 +8,7 @@ ADDR = (HOST, PORT)
 
 clientSockets = set()
 user_info = {}
-rooms = {"korea": set(), "japan": set(), "china": set(), "mongolia": set(), "taiwan": set()}
+rooms = {"south korea": set(), "north korea": set(), "china": set(), "japan": set(), "mongolia": set(), "taiwan": set()}
 
 serverSocket = socket(AF_INET, SOCK_STREAM)
 serverSocket.bind(ADDR)
@@ -21,7 +21,7 @@ def client_com(cs, addr):
     try:
         userInfo = cs.recv(BUFSIZE).decode()
         userID, countryName = userInfo.split(':')
-        if countryName in ["korea", "japan", "china", "mongolia", "taiwan"]:
+        if countryName in ["south korea", "north korea", "china", "japan", "mongolia", "taiwan"]:
             user_info[cs] = (userID, countryName)
             rooms[countryName].add(cs)
             cs.send("Success".encode())
