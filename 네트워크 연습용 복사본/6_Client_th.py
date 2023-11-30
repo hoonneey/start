@@ -36,6 +36,11 @@ if response == "Success":
 else:
     print("Fail, 다시 입력해주세요.")
     sys.exit()
+print("""Commands,
+  show: 현재 국가의 채팅방 모든 사용자 ID를 알려줍니다.
+  change_country: 국가명 - 국가를 변경합니다. ex) change_country: south korea
+  exit: 채팅방을 종료합니다.
+""")
 
 user_id, country = user_info.split(':')
 
@@ -43,17 +48,26 @@ def listen_from_server():
     while True:
         message = clientSocket.recv(1024).decode()
         if message:
-            print("Received, " + message) # 이 부분 체크
+            print("Received, " + message) 
 
 t = Thread(target=listen_from_server)
 t.daemon = True
 t.start()
+
 while True:
-    sendData = input("채팅: ") # 사용자(국가): 로 바꾸기
+    sendData = input("채팅: ")
     if sendData:
-        if sendData.startswith("change_country"): # 이 부분 다시
-            new_country = sendData.split(" ")[1] 
-            clientSocket.send(f"change_country:{new_country}".encode())
+        if sendData.startswith("change_country"):
+            try:
+                _, new_country = sendData.split(":", 1)
+                new_country = new_country.strip()
+                if new_country in ["south korea", "north korea", "china", "japan", "mongolia", "taiwan"]:
+                    clientSocket.send(f"change_country:{new_country}".encode())
+                else:
+                    print("Invalid country format.")
+            except ValueError:
+                print("Invalid command format. Use 'change_country: CountryName'.")
+
         elif sendData == "show":
             clientSocket.send(sendData.encode())
         else:
