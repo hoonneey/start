@@ -10,7 +10,7 @@ ADDR = (HOST, PORT)
 
 def get_user_info():
     while True:
-        user_input = input("Enter 'User_ID: Country(1. south korea 2. north korea 3. china 4. japan 5. mongolia 6. taiwan) \n(ex. Cho:korea) \n")
+        user_input = input("Enter 'User_ID: Country(1. south korea 2. north korea 3. china 4. japan 5. mongolia 6. taiwan) \n(ex. Cho: south korea) \n")
         try:
             user_id, country = map(str.strip, user_input.split(':'))
             if country in ["south korea", "north korea", "china", "japan", "mongolia", "taiwan"]:
@@ -51,7 +51,10 @@ t.start()
 while True:
     sendData = input("채팅: ") # 사용자(국가): 로 바꾸기
     if sendData:
-        if sendData == "show":
+        if sendData.startswith("change_country"): # 이 부분 다시
+            new_country = sendData.split(" ")[1] 
+            clientSocket.send(f"change_country:{new_country}".encode())
+        elif sendData == "show":
             clientSocket.send(sendData.encode())
         else:
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")

@@ -37,6 +37,17 @@ def client_com(cs, addr):
             msg = cs.recv(BUFSIZE).decode()
             if msg == 'exit':
                 break
+            elif msg.startswith('change_country:'): # 이 부분 다시
+                new_country = msg.split(':')[1]
+                if new_country in rooms:
+                    old_country = user_info[cs][1]
+                    rooms[old_country].remove(cs)
+                    rooms[new_country].add(cs)
+                    user_info[cs] = (user_info[cs][0], new_country)
+                    cs.send(f"Country changed to {new_country}".encode())
+                else:
+                    cs.send("Invalid country".encode())
+
             elif msg == 'show':
                 user_list = "\n".join([f"{uid}: {country}" for _, (uid, country) in user_info.items()])
                 cs.send(user_list.encode())
