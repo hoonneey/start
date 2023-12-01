@@ -1,0 +1,56 @@
+int tmp_sensor = A0;
+
+int Vout;
+float V;
+
+float tempC;
+
+
+void setup() {
+  // put your setup code here, to run once:
+  Serial.begin(9600);
+  pinMode(tmp_sensor, INPUT);
+  pinMode(9, OUTPUT);
+  pinMode(10, OUTPUT);
+  pinMode(11, OUTPUT);
+}
+
+void allOFF(){
+    analogWrite(9,0);
+    analogWrite(10,0);
+    analogWrite(11,0);
+
+}
+void loop() {
+  // put your main code here, to run repeatedly:
+
+  Vout = analogRead(tmp_sensor);
+  V = Vout * 5.0 / 1024.0;
+  tempC = V / 0.01;
+
+  Serial.println(tempC);
+  if(tempC>=26) { //RED
+    allOFF();
+    analogWrite(9,255);
+    analogWrite(10, 0);
+    analogWrite(11, 0);
+
+  }
+
+  else if(tempC>=18) { //GREEN
+    allOFF();
+    analogWrite(9,0);
+    analogWrite(10, 255);
+    analogWrite(11, 0);
+    
+  }
+
+  else { //BLUE
+    allOFF();
+    analogWrite(9,0);
+    analogWrite(10,0);
+    analogWrite(11,255);
+    
+  }
+  
+}
