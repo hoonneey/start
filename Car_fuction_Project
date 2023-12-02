@@ -1,0 +1,53 @@
+
+class Car { constructor() {
+this.tirePressure = new TirePressure(); this.lightingSystem = new LightingSystem(); this.bodysystem = new BodySystem(); this.steeringSystem = new SteeringSystem(); this.powertrainSystem = new PowertrainSystem();
+this.observers = [];
+this.numbers = 1; }
+//facade 패턴 testdrive() {
+this.tirePressure.checkPressure(); this.steeringSystem.brake(); this.start(); this.powertrainSystem.drive(); this.powertrainSystem.accelerator(); this.bodysystem.window(); this.powertrainSystem.audio();
+}
+homecomingdrive(){ this.lightingSystem.blinkers(); this.powertrainSystem.reverse(); this.powertrainSystem.accelerator(); this.powertrainSystem.park(); this.steeringSystem.brake(); this.stop();
+this.bodysystem.trunk(); }
+summerdrive(){ this.powertrainSystem.airconditioner(); this.bodysystem.window();
+this.start(); this.powertrainSystem.airconditioner(); this.powertrainSystem.audio(); this.lightingSystem.taillights(); this.steeringSystem.brake(); this.powertrainSystem.drive();
+}
+//observer 패턴
+//추가 attach(observer) {
+this.observers.push(observer); }
+//삭제 detach(observer) {
+this.observers = this.observers.filter(obs => obs !== observer); }
+//상태
+notify() {
+this.observers.forEach(obs => obs.update());
+}
+//처음에는 엔진이 꺼져있는 상태
+status() {
+if (this.numbers === 1) {
+console.log('운행중이 아닙니다. 운행을 하려면 엔진을 켜주세요.'); } else if (this.numbers === 0) {
+console.log('운행중 입니다. 운행을 안 하면 엔진을 꺼주세요.'); }
+}
+start() {
+console.log('엔진이 켜졌습니다.');
+this.EngineEnabled = true;
+this.numbers = 0; this.powertrainSystem.Functionupdate(this.EngineEnabled);
+//Functionupdate() 메서드를 사용하여 isFunctionalityEnabled 값을 업데이트 this.notify(); //상태 알려주기 위함
+setTimeout(() => { this.tirePressure.updatePressure(); this.notify();
+}, 10000); // 10초 후 변경 }
+
+stop() {
+console.log('엔진이 꺼졌습니다.');
+this.EngineEnabled = false;
+this.numbers = 1; this.powertrainSystem.Functionupdate(this.EngineEnabled); this.notify(); //상태 알려주기 위함
+} }
+class Mechanic { //옵져버(정비공) setMechanic(mechanic) {
+this.mechanic = mechanic;
+this.mechanic.attach(this); }
+update() { //상태 업데이트 this.mechanic.status();
+} };
+//porsche는 Car 클래스의 인스턴스/ Car 클래스를 기반으로 생성된 객체이다 const porsche = new Car();
+const mechanic = new Mechanic();
+mechanic.setMechanic(porsche);
+
+console.log("테스트 운행을 하겠습니다.\n"); porsche.testdrive(); console.log("\n---------------------------\n");
+console.log("귀가조치 및 주차를 시키겠습니다.\n"); porsche.homecomingdrive(); console.log("\n---------------------------\n");
+console.log("한여름 밤의 드라이브.\n"); porsche.summerdrive(); console.log("\n---------------------------\n");
