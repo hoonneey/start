@@ -11,6 +11,8 @@ user_info = {}
 rooms = {"south korea": set(), "north korea": set(), "china": set(), "japan": set(), "mongolia": set(), "taiwan": set()}
 
 serverSocket = socket(AF_INET, SOCK_STREAM)
+serverSocket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1) #중복 오류 해결을 위한 코드
+
 serverSocket.bind(ADDR)
 serverSocket.listen(10)
 print('서버가 시작되었습니다.')
@@ -31,12 +33,37 @@ def client_com(cs, addr):
     except:
         cs.send("Fail".encode())
         return
+    
 
     while True:
         try:
             msg = cs.recv(BUFSIZE).decode()
             if msg == 'exit':
                 break
+
+
+            # 딕셔너리로 쓰는 것, set에서 쓰는게 아님. list로 배열로 하거나 집합으로 
+
+            elif msg.startswith('broadcast:'):
+                all_clients = [socket for room in rooms.values() for socket in room]
+                for socket in all_clients:
+                    if socket != cs:
+                        socket.send(msg.encode())
+
+            # elif msg.startswith('broadcast:'):
+            #     broadcast_msg = msg[len('broadcast:'):]  # 'broadcast:' 접두사 제거
+            #     all_clients = [socket for room in rooms.values() for socket in room]
+            #     for socket in all_clients:
+            #         if socket != cs:
+            #             try:
+            #                 socket.send(broadcast_msg.encode())
+            #             except Exception as e:
+            #                 # 오류 처리
+            #                 continue
+
+                        
+
+
             elif msg.startswith('change_country:'):
                 new_country = msg.split(':')[1].strip()
                 if new_country in rooms:

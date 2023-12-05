@@ -37,9 +37,10 @@ else:
     print("Fail, 다시 입력해주세요.")
     sys.exit()
 print("""Commands,
-  show: 현재 국가의 채팅방 모든 사용자 ID를 알려줍니다.
-  change_country: 국가명 - 국가를 변경합니다. ex) change_country: south korea
-  exit: 채팅방을 종료합니다.
+    show: 현재 국가의 채팅방 모든 사용자 ID를 알려줍니다.
+    change_country: 국가명 - 국가를 변경합니다. ex) change_country: south korea
+    broadcast: 전체 국가로 메시지를 전송합니다.
+    exit: 채팅방을 종료합니다.
 """)
 
 user_id, country = user_info.split(':')
@@ -57,6 +58,11 @@ t.start()
 while True:
     sendData = input("채팅: ")
     if sendData:
+        if sendData.startswith("broadcast:"):
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            broadcast_msg = f"{user_id}/ {country}/ {timestamp}/ {sendData[len('broadcast:'):].strip()}"
+            clientSocket.send(f"broadcast: {broadcast_msg}".encode())
+
         if sendData.startswith("change_country"):
             try:
                 _, new_country = sendData.split(":", 1)
