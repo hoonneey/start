@@ -27,6 +27,7 @@ def client_com(cs, addr):
             user_info[cs] = (userID, countryName)
             rooms[countryName].add(cs)
             cs.send("Success".encode())
+            print(f"User {userID} from {countryName} has entered the chat.")  # 사용자 입장 메시지
         else:
             cs.send("Fail".encode())
             return
@@ -39,10 +40,10 @@ def client_com(cs, addr):
         try:
             msg = cs.recv(BUFSIZE).decode()
             if msg == 'exit':
+                
+                print(f"User {userID} has left the chat.")  # 사용자 퇴장 메시지
                 break
 
-
-            # 딕셔너리로 쓰는 것, set에서 쓰는게 아님. list로 배열로 하거나 집합으로 
 
             elif msg.startswith('broadcast:'):
                 all_clients = [socket for room in rooms.values() for socket in room]
@@ -72,6 +73,7 @@ def client_com(cs, addr):
                     rooms[new_country].add(cs)
                     user_info[cs] = (user_info[cs][0], new_country)
                     cs.send(f"Country changed to {new_country}".encode())
+                    print(f"User {userID} changed country from {old_country} to {new_country}.")  # 국가 변경 메시지
                 else:
                     cs.send("Invalid country".encode())
             elif msg == 'show':
@@ -88,6 +90,7 @@ def client_com(cs, addr):
     cs.close()
     rooms[countryName].remove(cs)
     del user_info[cs]
+
 
 while True:
     clientSocket, addr_info = serverSocket.accept()
